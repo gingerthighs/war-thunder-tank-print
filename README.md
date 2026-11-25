@@ -36,32 +36,38 @@ Danach in Claude Code zum Beispiel:
 /war-thunder-tank-print Sturmtiger, Maßstab 1:72
 ```
 
-## Prompt für Agents
+## Installations-Prompt für Agents
 
-Diesen Text einem Coding-Agent (Claude Code oder ähnlich) geben; `<Fahrzeug>` ersetzen. Der Agent installiert den Skill bei Bedarf selbst und arbeitet bis zur fertigen Druckdatei.
+Diesen Text einem Coding-Agent (Claude Code oder ähnlich) geben. Er installiert den Skill und die lokale Laufzeit und prüft beides; danach reicht `/war-thunder-tank-print <Fahrzeug>`.
 
 ```text
-Erstelle mir aus dem War-Thunder-Bodenfahrzeug "<Fahrzeug>" einen mehrteiligen Modellbausatz
-als eine native Bambu-Studio-Druckdatei (.gcode.3mf), Maßstab 1:72, Bambu A1 mini, 0,2-mm-Düse, PLA.
+Installiere den Claude-Code-Skill war-thunder-tank-print und richte seine lokale Laufzeit ein (Windows).
 
-1. Falls der Skill fehlt: https://github.com/gingerthighs/war-thunder-tank-print nach
-   %USERPROFILE%\.claude\skills\war-thunder-tank-print klonen. Danach SKILL.md vollständig lesen
-   und die dort verlinkten references/*.md lesen, bevor du etwas ausführst. SKILL.md ist maßgeblich.
-2. Lokale Voraussetzungen prüfen (War Thunder, Python 3.11 mit bpy, WT Asset Explorer, Bambu Studio)
-   und fehlende Programme konkret benennen, statt Ersatz zu erfinden.
-3. Fahrzeugnamen mit scripts/vehicle_catalog.py auflösen. Nur bei status "ambiguous" oder
-   "needs_confirmation" nachfragen; variants und equivalent_ids nur nennen.
-4. Mit scripts/bootstrap_project.py ein eigenes, kurzes Projekt anlegen (kurzer Pfad, Windows-Grenze
-   260 Zeichen) und nur dessen tools/pipeline.py nutzen; --help muss mit
-   "Engine snapshot: 2026-11-25-generic" enden.
-5. Pipeline mit --stage all starten. Lange Läufe mit dem Muster aus references/local-runtime.md
-   überwachen. Erfolg ausschließlich aus tools/run_status.py bzw. logs/latest_run.json ablesen,
-   nie aus Konsolentext.
-6. Nach prepare assembly_exploded.png ansehen und print_report.json:review_flags lesen. Bei
-   Rezeptänderungen nur prepare -> package -> combine wiederholen.
-7. Antwort: Dateipfad, Fahrzeug-ID, Teile- und Plattenzahl, Druckzeit, Material, alle Review-Hinweise,
-   ob das Rezept automatisch erzeugt ist. Reale Passprobe als unbestätigt kennzeichnen.
-   Nichts an einen Drucker senden.
+1. Skill: https://github.com/gingerthighs/war-thunder-tank-print nach
+   %USERPROFILE%\.claude\skills\war-thunder-tank-print klonen. Existiert der Ordner schon als
+   Git-Klon: git pull. Existiert er ohne Git: nicht überschreiben, mich fragen.
+   Danach README.md, SKILL.md und references/local-runtime.md lesen.
+2. Voraussetzungen prüfen und Fehlendes konkret mit Pfad/Version melden, nichts ersetzen:
+   War Thunder (Standard: C:\Program Files (x86)\Steam\steamapps\common\War Thunder),
+   Bambu Studio (C:\Program Files\Bambu Studioambu-studio.exe), git, uv, optional FreeCAD 1.0.
+   Programme nur nach meiner Zustimmung installieren.
+3. Laufzeitprojekt anlegen, kurzer Pfad (Windows-Grenze 260 Zeichen), z. B.
+   %USERPROFILE%\Documents\wt_print:
+   uv run --python 3.11 <skill>\scriptsootstrap_project.py --destination <laufzeitprojekt>
+   Das Ziel muss leer sein oder fehlen.
+4. Im Laufzeitprojekt Setup-Panzer.ps1 ausführen (lädt WT Asset Explorer auf festem Commit,
+   wt_ext_cli 0.6.6, Python 3.11 mit bpy 4.5.3 nach requirements-lock.txt). Erfolg nur gelten lassen,
+   wenn die letzte Zeile "Bereit: Blender 4.5.3" lautet.
+5. Prüfen: Test-Panzer.ps1 im Laufzeitprojekt (FreeCAD-Pfad per -FreeCADPython, falls abweichend)
+   und die Skript-Tests:
+   <laufzeitprojekt>\.venv\Scripts\python.exe -m unittest discover -s <skill>\scripts -p "test_*.py"
+   <laufzeitprojekt>\.venv\Scripts\python.exe <laufzeitprojekt>	ools\pipeline.py --help
+   muss mit "Engine snapshot: 2026-11-25-generic" enden.
+6. Katalog-Test: scripts/vehicle_catalog.py --project <laufzeitprojekt> --query "Leopard 2A7V"
+   muss status "resolved" liefern (erster Aufruf entpackt Spieldaten, dauert einige Minuten).
+7. Ergebnis melden: Skill-Pfad und Commit, Laufzeitprojekt, Python/bpy-Version, Testergebnis
+   (bestanden/übersprungen/fehlgeschlagen mit Ausgabe), fehlende Programme.
+   Nichts exportieren, slicen oder an einen Drucker senden.
 ```
 
 ## Tests
