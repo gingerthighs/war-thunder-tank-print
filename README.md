@@ -36,6 +36,34 @@ Danach in Claude Code zum Beispiel:
 /war-thunder-tank-print Sturmtiger, Maßstab 1:72
 ```
 
+## Prompt für Agents
+
+Diesen Text einem Coding-Agent (Claude Code oder ähnlich) geben; `<Fahrzeug>` ersetzen. Der Agent installiert den Skill bei Bedarf selbst und arbeitet bis zur fertigen Druckdatei.
+
+```text
+Erstelle mir aus dem War-Thunder-Bodenfahrzeug "<Fahrzeug>" einen mehrteiligen Modellbausatz
+als eine native Bambu-Studio-Druckdatei (.gcode.3mf), Maßstab 1:72, Bambu A1 mini, 0,2-mm-Düse, PLA.
+
+1. Falls der Skill fehlt: https://github.com/gingerthighs/war-thunder-tank-print nach
+   %USERPROFILE%\.claude\skills\war-thunder-tank-print klonen. Danach SKILL.md vollständig lesen
+   und die dort verlinkten references/*.md lesen, bevor du etwas ausführst. SKILL.md ist maßgeblich.
+2. Lokale Voraussetzungen prüfen (War Thunder, Python 3.11 mit bpy, WT Asset Explorer, Bambu Studio)
+   und fehlende Programme konkret benennen, statt Ersatz zu erfinden.
+3. Fahrzeugnamen mit scripts/vehicle_catalog.py auflösen. Nur bei status "ambiguous" oder
+   "needs_confirmation" nachfragen; variants und equivalent_ids nur nennen.
+4. Mit scripts/bootstrap_project.py ein eigenes, kurzes Projekt anlegen (kurzer Pfad, Windows-Grenze
+   260 Zeichen) und nur dessen tools/pipeline.py nutzen; --help muss mit
+   "Engine snapshot: 2026-11-25-generic" enden.
+5. Pipeline mit --stage all starten. Lange Läufe mit dem Muster aus references/local-runtime.md
+   überwachen. Erfolg ausschließlich aus tools/run_status.py bzw. logs/latest_run.json ablesen,
+   nie aus Konsolentext.
+6. Nach prepare assembly_exploded.png ansehen und print_report.json:review_flags lesen. Bei
+   Rezeptänderungen nur prepare -> package -> combine wiederholen.
+7. Antwort: Dateipfad, Fahrzeug-ID, Teile- und Plattenzahl, Druckzeit, Material, alle Review-Hinweise,
+   ob das Rezept automatisch erzeugt ist. Reale Passprobe als unbestätigt kennzeichnen.
+   Nichts an einen Drucker senden.
+```
+
 ## Tests
 
 ```powershell
