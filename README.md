@@ -49,6 +49,10 @@ Danach in Claude Code zum Beispiel:
 - Keine automatische Teilung zu großer Wannen und keine Mehrplattenprojekte.
 - Passung und Druckbarkeit sind nur per Slicer und Geometrieprüfung belegt; die reale Passprobe steht aus.
 
+## Lizenz
+
+Code und Dokumentation: [MIT](LICENSE). Frei nutzbar, änderbar und weitergebbar, auch kommerziell; nur der Lizenzhinweis muss erhalten bleiben. Gilt nicht für War-Thunder-Spieldaten oder daraus erzeugte Modelle.
+
 ## Hinweis
 
 Inoffizielles Fanprojekt, nicht mit Gaijin Entertainment verbunden. War Thunder und die Fahrzeugmodelle gehören ihren Rechteinhabern. Das Repo enthält nur Quellcode und Dokumentation; Spielmodelle werden ausschließlich lokal aus der eigenen Installation gelesen. Erzeugte Modelle nur privat verwenden.
